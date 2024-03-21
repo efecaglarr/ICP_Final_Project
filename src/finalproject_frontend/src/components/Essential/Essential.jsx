@@ -32,7 +32,6 @@ function ExampleGrid() {
             <Card style={{backgroundColor: '#E7EDF3'}} className={classes.card}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ backgroundColor: 'white', borderRadius: '50%', width: 'auto', height: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                  {/* Your SVG icon */}
                   <IconButton className={classes.iconButton}>
                     {React.createElement(iconComponents[page.component])}
                   </IconButton>
