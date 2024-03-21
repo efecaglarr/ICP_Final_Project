@@ -112,7 +112,7 @@ function ResponsiveAppBar(event) {
               textDecoration: "none",
             }}
           >
-            puddish
+            dPett
           </Typography>
           <Box
             sx={{

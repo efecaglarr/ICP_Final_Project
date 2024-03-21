@@ -10,7 +10,7 @@ import {
 
 import Pets from "../Pets/Pets";
 import Form from "../Form/Form";
-import ExampleGrid from "../Essential/Essential";
+import Essentials from "../Essential/Essential";
 import { Divider, Typography } from "@mui/material";
 
 const Home = ({currentId, setCurrentId}) => {
@@ -21,11 +21,11 @@ const Home = ({currentId, setCurrentId}) => {
     <Container>
       <Grow in>
         <Container style={{backgroundColor: '#FEF9F5'}}>
-        <Typography variant="h6" sx={{ml:1, mt:2, fontFamily:'sans-serif', fontWeight:'bold'}}>
+        {/* <Typography variant="h6" sx={{ml:1, mt:2, fontFamily:'sans-serif', fontWeight:'bold'}}>
           Pet Essentials
         </Typography>
         <Divider sx={{m:1}} />
-        <ExampleGrid />
+        <Essentials /> */}
         <Typography variant="h6" sx={{ml:1, mt:2, fontFamily:'sans-serif', fontWeight:'bold'}}>
           Adopt Me!
         </Typography>

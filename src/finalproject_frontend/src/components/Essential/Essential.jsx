@@ -21,7 +21,7 @@ const pages = [
   { title: 'Food starting at $10', description: 'Complete & balanced nutrition priced right', link: '#' ,component: 'ScatterPlotIcon'},
 ];
 
-function ExampleGrid() {
+function Essentials() {
   const classes = useStyles();
 
   return (
@@ -54,4 +54,4 @@ function ExampleGrid() {
   );
 }
 
-export default ExampleGrid;
+export default Essentials;
