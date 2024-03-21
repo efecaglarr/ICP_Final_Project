@@ -1,31 +1,24 @@
-import { useState } from 'react';
-import { finalproject_backend } from 'declarations/finalproject_backend';
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { Container } from '@material-ui/core'
 
+import { useState } from 'react'
+
+import Home from './components/Home/Home'
+import Navbar from './components/Navbar/Navbar'
+import PetDetails from './components/PetDetails/PetDetails'
 function App() {
-  const [greeting, setGreeting] = useState('');
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    finalproject_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
-
-  return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
-  );
+	const [currentId, setCurrentId] = useState(0)
+	return (
+		<Container style={{backgroundColor: '#FEF9F5'}} maxWidth='lg'>
+			<Navbar />
+			<Routes>
+				<Route path='/' element={<Navigate to={'/pets'} />} />
+				<Route path='/pets' element={<Home currentId={currentId} setCurrentId={setCurrentId	} />} />
+				<Route path='/pets/:id' element={<PetDetails />} />
+				{/* <Route path="/auth" element={!user ? <Auth /> : <Navigate to='/posts'/>} /> */}
+			</Routes>
+		</Container>
+	)
 }
 
-export default App;
+export default App
