@@ -6,14 +6,37 @@
     },
     "finalproject_frontend": {
       "dependencies": [
-        "finalproject_backend"
+        "finalproject_backend",
+        "internet-identity",
+        "whoami"
       ],
       "source": [
         "src/finalproject_frontend/dist"
       ],
       "type": "assets",
       "workspace": "finalproject_frontend"
+    },
+    "internet-identity": {
+      "type": "pull",
+      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+    },
+    "whoami": {
+      "main": "src/finalproject_backend/whoami/main.mo",
+      "type": "motoko",
+      "declarations": {
+        "node_compatibility": true
+      },
+      "pullable": {
+        "dependencies": [],
+        "wasm_url": "https://github.com/krpeacock/auth-client-demo/releases/latest/download/whoami.wasm",
+        "wasm_hash": "a5af74d01aec228c5a717dfb43f773917e1a9138e512431aafcd225ad0001a8b",
+        "init_guide": "(null)"
+      }
     }
+
+
+
+
   },
   "defaults": {
     "build": {
@@ -22,5 +45,5 @@
     }
   },
   "output_env_file": ".env",
-  "version": 1
+  "version": 2
 }

@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles((theme) => ({
+
   media: {
     borderRadius: '20px',
     objectFit: 'cover',
@@ -50,4 +51,5 @@ export default makeStyles((theme) => ({
     overflowY: 'auto',
     marginRight: '30px',
   },
+  
 }));
