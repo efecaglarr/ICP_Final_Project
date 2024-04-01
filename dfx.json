@@ -6,9 +6,7 @@
     },
     "finalproject_frontend": {
       "dependencies": [
-        "finalproject_backend",
-        "internet-identity",
-        "whoami"
+        "finalproject_backend"
       ],
       "source": [
         "src/finalproject_frontend/dist"
@@ -16,27 +14,17 @@
       "type": "assets",
       "workspace": "finalproject_frontend"
     },
-    "internet-identity": {
-      "type": "pull",
-      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
-    },
-    "whoami": {
-      "main": "src/finalproject_backend/whoami/main.mo",
-      "type": "motoko",
-      "declarations": {
-        "node_compatibility": true
+    "internet_identity": {
+      "type": "custom",
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
       },
-      "pullable": {
-        "dependencies": [],
-        "wasm_url": "https://github.com/krpeacock/auth-client-demo/releases/latest/download/whoami.wasm",
-        "wasm_hash": "a5af74d01aec228c5a717dfb43f773917e1a9138e512431aafcd225ad0001a8b",
-        "init_guide": "(null)"
-      }
+      "frontend": {}
     }
-
-
-
-
   },
   "defaults": {
     "build": {

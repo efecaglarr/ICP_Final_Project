@@ -1,6 +1,7 @@
 import { AuthClient } from "@dfinity/auth-client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { canisterId, createActor } from 'declarations/whoami';
+import { canisterId, createActor } from 'declarations/finalproject_backend';
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext();
 
@@ -15,10 +16,9 @@ const defaultOptions = {
     identityProvider:
       process.env.DFX_NETWORK === "ic"
         ? "https://identity.ic0.app/#authorize"
-        : `http://localhost:4943?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai#authorize`,
+        : `http://be2us-64aaa-aaaaa-qaabq-cai.localhost:4943`,
   },
 };
-
 
 export const useAuthClient = (options = defaultOptions) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,13 +33,14 @@ export const useAuthClient = (options = defaultOptions) => {
     });
   }, []);
 
-  const login = () => {
-    authClient.login({
+  async function login () {
+    await authClient.login({
       ...options.loginOptions,
       onSuccess: () => {
         updateClient(authClient);
       },
     });
+    
   };
 
   async function updateClient(client) {
@@ -52,6 +53,8 @@ export const useAuthClient = (options = defaultOptions) => {
     const principal = identity.getPrincipal();
     setPrincipal(principal);
 
+    localStorage.setItem('profile', principal);
+
     setAuthClient(client);
 
     const actor = createActor(canisterId, {
@@ -61,6 +64,7 @@ export const useAuthClient = (options = defaultOptions) => {
     });
 
     setWhoamiActor(actor);
+
   }
 
   async function logout() {
@@ -68,10 +72,31 @@ export const useAuthClient = (options = defaultOptions) => {
     await updateClient(authClient);
   }
 
+  async function authInit() {
+    try {
+
+        const authClient = await AuthClient.create();
+
+        if (await authClient.isAuthenticated()) {
+
+            const identity = await authClient.getIdentity();
+            const principal = identity.getPrincipal();
+
+            setUser(principal.toText());
+        } else {
+            console.log("User is not authenticated");
+        }
+    } catch (error) {
+        console.error("Error initializing authentication:", error);
+    }
+}
+
+
   return {
     isAuthenticated,
     login,
     logout,
+    // authInit,
     authClient,
     identity,
     principal,
@@ -79,9 +104,6 @@ export const useAuthClient = (options = defaultOptions) => {
   };
 };
 
-/**
- * @type {React.FC}
- */
 export const AuthProvider = ({ children }) => {
   const auth = useAuthClient();
 

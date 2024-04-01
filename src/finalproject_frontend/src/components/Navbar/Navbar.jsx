@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-
+import { AuthProvider, useAuth } from '../Auth/use-auth-client'
 import {
 	AppBar,
 	Box,
@@ -13,29 +13,38 @@ import {
 	MenuItem,
 	TextField,
 } from '@mui/material'
-
 import './styles.css'
-
 import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search'
 
 const pages = ['ADOPT', 'PETS', 'ABOUT']
 
-function ResponsiveAppBar(event) {
-  const navigate = useNavigate();
+function Navbar() {
+	const navigate = useNavigate()
 	const [anchorElNav, setAnchorElNav] = useState(null)
+	const [user, setUser] = useState(null)
+
+	const { isAuthenticated, logout, whoamiActor } = useAuth()
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget)
 	}
-
 	const handleCloseNavMenu = () => {
 		setAnchorElNav(null)
 	}
 
-  const openSign = () => {
-    navigate(`/auth`);
-  };
+	const openSign = () => {
+		navigate(`/auth`)
+	}
+
+	const openProfile = () => {
+		navigate(`/profile/${user}`)
+	}
+
+	const logoutUser = () => {
+		logout()
+		window.location.reload()
+	}
 
 	return (
 		<AppBar
@@ -164,12 +173,40 @@ function ResponsiveAppBar(event) {
 							),
 						}}
 					/>
-					<button>
-						<a onClick={openSign} class='button_top'> Sign In</a>
+					<button
+						style={{
+							marginRight: '5px',
+						}}
+					>
+						<a
+							onClick={() => {
+								isAuthenticated ? logoutUser() : openSign()
+							}}
+							className='button_top'
+						>
+							{isAuthenticated ? 'Sign out' : 'Sign in'}
+						</a>
 					</button>
+					{isAuthenticated && (
+						<button>
+							<a
+								onClick={() => { openProfile() }}
+								className='button_top'
+							>
+								{isAuthenticated && 'Profile'}
+							</a>
+						</button>
+					)}
 				</Toolbar>
 			</Container>
 		</AppBar>
 	)
 }
-export default ResponsiveAppBar
+
+export default function NavbarWrapper() {
+	return (
+		<AuthProvider>
+			<Navbar />
+		</AuthProvider>
+	)
+}

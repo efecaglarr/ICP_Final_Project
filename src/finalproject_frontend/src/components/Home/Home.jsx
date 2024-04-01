@@ -35,7 +35,7 @@ const Home = ({currentId, setCurrentId}) => {
             container
             justifyContent="space-between"
             alignItems="stretch"
-            spacing={3}
+            spacing={2}
           >
           <Grid className={classes.gridPosts} item xs={12} /* take 12 spaces on mobile */ sm={6} md={9}>
               <Pets setCurrentId={setCurrentId}/>

@@ -5,6 +5,23 @@ import SendIcon from '@mui/icons-material/Send'
 import CircularProgress from '@mui/material/CircularProgress'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import FileBase from 'react-file-base64'
+import { AuthClient } from "@dfinity/auth-client";
+
+async function authInit() {
+    try {
+        const authClient = await AuthClient.create();
+
+        if (await authClient.isAuthenticated()) {
+            const identity = await authClient.getIdentity();
+            const principal = identity.getPrincipal();
+            setUser(principal.toText());
+        } else {
+            console.log("User is not authenticated");
+        }
+    } catch (error) {
+        console.error("Error initializing authentication:", error);
+    }
+}
 
 import { finalproject_backend } from 'declarations/finalproject_backend'
 
@@ -17,15 +34,25 @@ const generateId = () => {
 }
 
 const Form = ({ currentId, setCurrentId }) => {
+
+	const [user, setUser] = useState(null)
+
 	const readPetPost = async (id) => {
 		const postArray = currentId ? await finalproject_backend.read(id) : null
-		const post = postArray ? postArray[0] : null // Access the object if it exists
+		const post = postArray ? postArray[0] : null
 		return post
 	}
 
 	const [isLoading, setIsLoading] = useState(false)
 
+	async function authInit() {
+		const userSet = localStorage.getItem('profile');
+		JSON.stringify(userSet);
+		setUser(userSet);
+    }
+
 	const [postData, setPostData] = useState({
+		author: '',
 		title: '',
 		message: '',
 		selectedFile: '',
@@ -48,13 +75,20 @@ const Form = ({ currentId, setCurrentId }) => {
 		fetchPost()
 	}, [currentId])
 
+	useEffect(() => {
+		authInit()
+	},[])
+	
+	
+
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		const postId = generateId()
 		const currentDate = new Date();
 		const formattedDate = currentDate.toISOString();
-		const postDataWithId = { ...postData, id: postId , createdAt: formattedDate}
-		const postDataWithCurrentId = { ...postData, id: currentId }
+		console.log(user);
+		const postDataWithId = { ...postData, id: postId , createdAt: formattedDate, author: user}
+		const postDataWithCurrentId = { ...postData, id: currentId, author: user}
 
 		if (currentId) {
 			finalproject_backend.update(currentId, postDataWithCurrentId)
@@ -64,6 +98,16 @@ const Form = ({ currentId, setCurrentId }) => {
 			clear()
 		}
 	}
+
+	if (user != null) {
+        return(
+            <Paper className={classes.paper}>
+                <Typography variant='h6' align='center'>
+                    Please sign in to create your own posts and comment others posts
+                </Typography>
+            </Paper>
+        )
+    }
 
 	const clear = () => {
 		setCurrentId(null)

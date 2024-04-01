@@ -1,10 +1,21 @@
 import React from "react";
 import { useAuth } from "./use-auth-client";
 import useStyles from "./styles.js"
+import { useNavigate } from "react-router";
 
 function LoggedOut() {
   const { login } = useAuth();
   const classes = useStyles();
+  const navigate = useNavigate();
+
+  // const buttonClick = () => {
+  //   login();
+  //   navigate('/');
+  //   setTimeout(() => {
+  //     window.location.reload();
+  //     // setIsLoading(false);
+  // }, 5000); // = 5 seconds
+  // }
 
   return (
     <div className={classes.container}>

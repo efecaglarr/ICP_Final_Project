@@ -10,13 +10,23 @@ const whoamiStyles = {
 import useStyles from "./styles";
 
 function LoggedIn() {
+  
+  React.useEffect(() => {
+    const reloadCount = sessionStorage.getItem('reloadCount');
+    if (reloadCount < 1) {
+      sessionStorage.setItem('reloadCount', String(Number(reloadCount) + 1));
+      window.location.reload();
+    } else {
+      sessionStorage.removeItem('reloadCount');
+    }
+  }, []);
+  
   const [result, setResult] = React.useState("");
   const classes = useStyles();
   const { whoamiActor, logout } = useAuth();
 
   const handleClick = async () => {
     const whoami = await whoamiActor.whoami();
-    console.log(whoami);
     setResult(whoami);
   };
 

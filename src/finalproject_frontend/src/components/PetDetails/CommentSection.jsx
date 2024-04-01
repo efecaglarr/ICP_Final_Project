@@ -1,78 +1,107 @@
 import React, { useState, useRef, useEffect } from 'react'
-import {
-	Typography,
-	TextField,
-	Button,
-} from '@material-ui/core/'
-
+import { Typography, TextField, Button } from '@material-ui/core/'
 import useStyles from './styles'
 import { finalproject_backend } from 'declarations/finalproject_backend'
 import { useParams } from 'react-router-dom'
 
+
+
 const CommentSection = ({ petPost }) => {
-	console.log(petPost);
-	var { id } = useParams()
-	id = parseInt(id, 10)
-	const [post, setPostData] = useState(petPost)
+	const { id } = useParams()
+	
+	const idAsNat32 = parseInt(id, 10)
 	const [comment, setComment] = useState('')
-	const [comments, setComments] = useState(petPost.comments)
+	const [comments, setComments] = useState([])
+	const [user, setUser] = useState(null)
 
 	const classes = useStyles()
 	const commentsRef = useRef()
 
+	const generateId = () => {
+		const timestamp = Date.now()
+		const nat32Value = timestamp % Math.pow(2, 32)
+		return nat32Value
+	}
+
+
 	const handleComment = async () => {
-		const newComments = [...comments, comment]
+		const newComment = {
+			id: generateId(),
+			text: comment,
+			author: user,
+		}
+		const newComments = [...comments, newComment]
 		setComments(newComments)
 		setComment('')
-		const postDataWithComments = { ...post, comments: newComments }
-		setPostData(postDataWithComments)
 
-		await finalproject_backend.update(id, postDataWithComments)
+		const updatedPost = { ...petPost, comments: newComments }
+
+		await finalproject_backend.update(idAsNat32, updatedPost)
 		commentsRef.current.scrollIntoView({ behavior: 'smooth' })
 	}
 
+	const handleDeleteComment = async (commentId) => {
+		const updatedComments = comments.filter((comment) => comment.id !== commentId)
+		setComments(updatedComments)
+
+		const updatedPost = { ...petPost, comments: updatedComments }
+
+		await finalproject_backend.update(idAsNat32, updatedPost)
+	}
+
 	useEffect(() => {
-		const fetchData = async () => {
-            try {
-                const post = await finalproject_backend.read(id)
-                // if (post) setPostData(post)
-            } catch (error) {
-                console.error('Error fetching pet posts:', error)
-            }
-        }
-        fetchData()
-	},[comments])
+		setComments(petPost.comments || [])
+	}, [petPost])
+
+	useEffect(() => {
+		authInit()
+	}, [])
+
+	async function authInit() {
+		const userSet = localStorage.getItem('profile')
+		setUser(userSet)
+	}
 
 	return (
 		<div>
 			<div className={classes.commentsOuterContainer}>
 				<div className={classes.commentsInnerContainer}>
-
-					<Typography variant='body2'>
-						<strong>{petPost.comments}</strong>
-					</Typography>
-					{/* {Array.isArray(comments) && comments.length > 0 ? (
-						comments.map((c, i) => (
-							<Typography key={i} gutterBottom variant='subtitle1'>
-								<strong>{c.split(': ')[0]}</strong>
-								{c.split(':')[1]}
-							</Typography>
+					{Array.isArray(comments) && comments.length > 0 ? (
+						comments.map((comment) => (
+							<div key={comment.id}>
+								<Typography gutterBottom variant='subtitle1'>
+									<strong>{comment.author}</strong>: {comment.text}
+									<br/>
+									ID is : {comment.id}
+								</Typography>
+								{user === comment.author && (
+									<Button
+										key={`delete-${comment.id}`}
+										onClick={() => handleDeleteComment(comment.id)}
+									>
+										Delete
+									</Button>
+								)}
+							</div>
 						))
 					) : (
-						<Typography variant='body2'>No comments yet.</Typography>
-					)} */}
+						<Typography key='no-comments' variant='body2'>
+							No comments yet.
+						</Typography>
+					)}
 					<div ref={commentsRef} />
 				</div>
+
 				<div style={{ width: '70%' }}>
 					<Typography gutterBottom variant='h6'>
 						Write a comment
 					</Typography>
 					<TextField
 						fullWidth
-						multirows={4}
+						multiline
+						minRows={4}
 						variant='outlined'
 						label='Comment'
-						multiline
 						value={comment}
 						onChange={(e) => setComment(e.target.value)}
 					/>

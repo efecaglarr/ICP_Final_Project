@@ -59,6 +59,9 @@ const PetDetails = () => {
 					<Typography variant='body2' >
 						Created at : {moment(petPost.createdAt).fromNow()}
 					</Typography>
+					<Typography variant='body2' >
+						Created by : {petPost.author}
+					</Typography>
 					<Divider style={{ margin: '20px 0' }} />
 					<Typography variant='body1'>
 						<strong>Location :  {petPost.location} <LocationOn sx={{ verticalAlign: 'middle',width: '13px', marginBottom: '3px'}}/></strong>
